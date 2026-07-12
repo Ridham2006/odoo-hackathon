@@ -15,7 +15,7 @@ export const authMiddleware = async (c: Context, next: Next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = await verify(token, process.env.JWT_SECRET || 'transitops_super_secret');
+    const decoded = await verify(token, process.env.JWT_SECRET || 'transitops_super_secret', 'HS256');
     
     // Set user info in context for next middlewares/routes
     c.set('user', decoded);

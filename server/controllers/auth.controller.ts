@@ -31,7 +31,8 @@ export const login = async (c: any) => {
 
     const token = await sign(
       { userId: user._id, role: user.role }, 
-      process.env.JWT_SECRET || 'transitops_super_secret'
+      process.env.JWT_SECRET || 'transitops_super_secret',
+      'HS256'
     );
 
     return c.json({ 

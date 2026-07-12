@@ -14,8 +14,8 @@ expenseRoutes.use('/*', authMiddleware);
 
 // FUEL LOGS ROUTES
 expenseRoutes.get('/fuel', requireRole('FINANCIAL_ANALYST', 'FLEET_MANAGER'), getFuelLogs);
-expenseRoutes.post('/fuel', requireRole('FINANCIAL_ANALYST'), addFuelLog);
+expenseRoutes.post('/fuel', requireRole('FINANCIAL_ANALYST', 'FLEET_MANAGER'), addFuelLog);
 
 // OTHER EXPENSES ROUTES
 expenseRoutes.get('/', requireRole('FINANCIAL_ANALYST', 'FLEET_MANAGER'), getExpenses);
-expenseRoutes.post('/', requireRole('FINANCIAL_ANALYST'), addExpense);
+expenseRoutes.post('/', requireRole('FINANCIAL_ANALYST', 'FLEET_MANAGER'), addExpense);
