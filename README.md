@@ -1,2 +1,6 @@
 # odoo-hackathon
-moshi moshi 🦋
+
+## Team
+Ridham Shah
+Vaibhav Dave
+Om upadhyay
