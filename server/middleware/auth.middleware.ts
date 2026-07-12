@@ -3,6 +3,11 @@ import type { Context, Next } from 'hono';
 
 // Authenticate User (Check JWT)
 export const authMiddleware = async (c: Context, next: Next) => {
+  // Skip auth for CORS preflight requests - cors() middleware handles them
+  if (c.req.method === 'OPTIONS') {
+    return await next();
+  }
+
   try {
     const authHeader = c.req.header('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

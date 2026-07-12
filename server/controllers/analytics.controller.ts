@@ -132,3 +132,99 @@ export const getAnalytics = async (c: any) => {
     return c.json({ error: error.message }, 500);
   }
 };
+
+// ==========================================
+// VEHICLE STATUS DISTRIBUTION
+// ==========================================
+export const getVehicleStatusDistribution = async (c: any) => {
+  try {
+    const distribution = await Vehicle.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]);
+    return c.json(distribution);
+  } catch (error: any) {
+    return c.json({ error: error.message }, 500);
+  }
+};
+
+// ==========================================
+// TRIP STATUS DISTRIBUTION
+// ==========================================
+export const getTripStatusDistribution = async (c: any) => {
+  try {
+    const distribution = await Trip.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]);
+    return c.json(distribution);
+  } catch (error: any) {
+    return c.json({ error: error.message }, 500);
+  }
+};
+
+// ==========================================
+// MONTHLY FUEL TREND (last 6 months)
+// ==========================================
+export const getMonthlyFuelTrend = async (c: any) => {
+  try {
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    const trend = await FuelLog.aggregate([
+      { $match: { date: { $gte: sixMonthsAgo } } },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$date' },
+            month: { $month: '$date' }
+          },
+          totalFuelCost: { $sum: '$fuelCost' },
+          totalLiters: { $sum: '$liters' }
+        }
+      },
+      { $sort: { '_id.year': 1, '_id.month': 1 } }
+    ]);
+
+    return c.json(trend);
+  } catch (error: any) {
+    return c.json({ error: error.message }, 500);
+  }
+};
+
+// ==========================================
+// DRIVER STATUS DISTRIBUTION
+// ==========================================
+export const getDriverStatusDistribution = async (c: any) => {
+  try {
+    const distribution = await Driver.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]);
+    return c.json(distribution);
+  } catch (error: any) {
+    return c.json({ error: error.message }, 500);
+  }
+};
+
+// ==========================================
+// EXPENSE BREAKDOWN (Fuel vs Toll vs Misc)
+// ==========================================
+export const getExpenseBreakdown = async (c: any) => {
+  try {
+    const [fuelTotal, expenseTotal] = await Promise.all([
+      FuelLog.aggregate([
+        { $group: { _id: null, total: { $sum: '$fuelCost' } } }
+      ]),
+      Expense.aggregate([
+        { $group: { _id: null, totalToll: { $sum: '$toll' }, totalOther: { $sum: '$other' } } }
+      ])
+    ]);
+
+    return c.json({
+      fuelCost: fuelTotal[0]?.total || 0,
+      toll: expenseTotal[0]?.totalToll || 0,
+      other: expenseTotal[0]?.totalOther || 0,
+      total: (fuelTotal[0]?.total || 0) + (expenseTotal[0]?.totalToll || 0) + (expenseTotal[0]?.totalOther || 0)
+    });
+  } catch (error: any) {
+    return c.json({ error: error.message }, 500);
+  }
+};

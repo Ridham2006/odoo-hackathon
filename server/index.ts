@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { connectDB } from './config/db';
 import { authRoutes } from './routes/auth.routes';
 import { vehicleRoutes } from './routes/vehicle.routes';
@@ -15,6 +16,19 @@ const app = new Hono();
 
 // Init DB
 connectDB();
+
+// CORS - Allow frontend dev server
+app.use('/*', cors({
+  origin: ['http://localhost:5173', 'http://localhost:4173', 'http://localhost:3000'],
+  credentials: true,
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization'],
+}));
+
+// Handle OPTIONS preflight for all routes explicitly
+app.options('/*', (c) => {
+  return c.body(null, 204);
+});
 
 // Routes
 app.route('/api/auth', authRoutes);

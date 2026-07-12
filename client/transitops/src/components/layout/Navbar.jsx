@@ -1,33 +1,56 @@
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth, ROLE_LABELS, ROLE_ICONS } from '../../context/AuthContext';
+import { Settings, LogOut } from 'lucide-react';
+
 const Navbar = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  if (!user) return null;
+
+  const initials = user.name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+
+  const RoleIcon = ROLE_ICONS[user.role];
+
   return (
-    <header className="h-20 bg-white border-b border-gray-200 px-8 flex items-center justify-between">
-
-      {/* Search */}
-
-      <div className="w-[320px]">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2.5 outline-none transition-all duration-200 focus:border-[#729969] focus:ring-2 focus:ring-[#729969]/20"
-        />
+    <header className="h-20 bg-white border-b border-[var(--card)] flex items-center justify-between px-8">
+      <div className="flex items-center gap-4">
+        <h2 className="text-xl font-semibold text-[var(--text)]">TransitOps</h2>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] text-sm font-medium">
+          <RoleIcon className="w-4 h-4" />
+          {ROLE_LABELS[user.role]}
+        </span>
       </div>
 
-      {/* Right Side */}
+      <div className="flex items-center gap-4">
+        <Link 
+          to="/settings" 
+          className="p-2 rounded-xl text-[var(--text)]/60 hover:bg-[var(--card)] hover:text-[var(--text)] transition-colors"
+          title="Settings"
+        >
+          <Settings className="w-5 h-5" strokeWidth={1.5} />
+        </Link>
 
-      <div className="flex items-center gap-5">
-
-        <p className="font-medium text-gray-700">
-          Raven K.
-        </p>
-
-        <span className="rounded-lg bg-[#729969] px-4 py-2 text-sm font-medium text-white">
-          Dispatcher
-        </span>
-
-        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#A1C0C2] font-semibold text-[#223125]">
-          RK
+        <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-[var(--card)] hover:bg-[var(--card)]/80 transition-colors cursor-pointer" onClick={handleLogout}>
+          <div className="w-9 h-9 rounded-full bg-[var(--primary)] flex items-center justify-center text-white font-semibold text-sm">
+            {initials}
+          </div>
+          <div className="hidden sm:block text-left">
+            <p className="text-sm font-medium text-[var(--text)]">{user.name}</p>
+            <p className="text-xs text-[var(--text)]/50">{user.email}</p>
+          </div>
+          <LogOut className="w-4 h-4 text-[var(--text)]/50" />
         </div>
-
       </div>
     </header>
   );
