@@ -121,7 +121,8 @@ const Analytics = () => {
         setExpenseBreakdown(expenseData);
       }
     } catch (err) {
-      toast.error('Failed to load some analytics');
+      console.error('Failed to load some analytics:', err?.response?.data?.error || err.message);
+      toast.error(err?.response?.data?.error || 'Failed to load some analytics');
     } finally {
       setIsLoading(false);
     }

@@ -32,7 +32,8 @@ const Maintenance = () => {
       const response = await maintenanceAPI.getAll(params);
       setLogs(response.data);
     } catch (err) {
-      toast.error('Failed to load maintenance logs');
+      console.error('Failed to load maintenance logs:', err?.response?.data?.error || err.message);
+      toast.error(err?.response?.data?.error || 'Failed to load maintenance logs');
     } finally {
       setIsLoading(false);
     }

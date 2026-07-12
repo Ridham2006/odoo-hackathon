@@ -26,16 +26,24 @@ const Dashboard = () => {
   const fetchDashboardData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [kpiRes, tripStatusRes, vehicleStatusRes] = await Promise.all([
-        analyticsAPI.getDashboardKPIs(),
-        analyticsAPI.getTripStatus().catch(() => ({ data: [] })),
-        analyticsAPI.getVehicleStatus().catch(() => ({ data: [] })),
-      ]);
+      // Only fetch KPIs - these are available to all authenticated users
+      const kpiRes = await analyticsAPI.getDashboardKPIs();
       setKpis(kpiRes.data);
-      setTripStatus(tripStatusRes.data || []);
-      setVehicleStatus(vehicleStatusRes.data || []);
+      
+      // Optional: fetch trip/vehicle status analytics (may fail for some roles, silently handled)
+      try {
+        const tripRes = await analyticsAPI.getTripStatus();
+        setTripStatus(tripRes.data || []);
+      } catch {}
+      
+      try {
+        const vehRes = await analyticsAPI.getVehicleStatus();
+        setVehicleStatus(vehRes.data || []);
+      } catch {}
     } catch (err) {
-      toast.error('Failed to load dashboard data');
+      console.error('Dashboard fetch error:', err?.response?.data?.error || err.message);
+      // Show the actual error from server if available
+      toast.error(err?.response?.data?.error || 'Failed to load dashboard data');
     } finally {
       setIsLoading(false);
     }

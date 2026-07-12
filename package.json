@@ -1,0 +1,24 @@
+{
+  "name": "odoo-hackathon",
+  "version": "1.0.0",
+  "description": "Ridham Shah Vaibhav Dave Om upadhyay",
+  "main": "add-fake-data.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ridham2006/odoo-hackathon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Ridham2006/odoo-hackathon/issues"
+  },
+  "homepage": "https://github.com/Ridham2006/odoo-hackathon#readme",
+  "dependencies": {
+    "mongodb": "^7.5.0"
+  }
+}

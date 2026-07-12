@@ -48,7 +48,8 @@ const Trips = () => {
       const response = await tripAPI.getAll(params);
       setTrips(response.data);
     } catch (err) {
-      toast.error('Failed to load trips');
+      console.error('Failed to load trips:', err?.response?.data?.error || err.message);
+      toast.error(err?.response?.data?.error || 'Failed to load trips');
     } finally {
       setIsLoading(false);
     }

@@ -49,7 +49,8 @@ const FuelExpenses = () => {
       setFuelLogs(fuelRes.data);
       setExpenses(expRes.data);
     } catch (err) {
-      toast.error('Failed to load fuel & expense data');
+      console.error('Failed to load fuel & expense data:', err?.response?.data?.error || err.message);
+      toast.error(err?.response?.data?.error || 'Failed to load fuel & expense data');
     } finally {
       setIsLoading(false);
     }
@@ -101,7 +102,8 @@ const FuelExpenses = () => {
       setShowAddFuelModal(false);
       fetchData();
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Failed to add fuel log');
+      console.error('Failed to add fuel log:', err?.response?.data?.error || err.message);
+      toast.error(err?.response?.data?.error || 'Failed to add fuel log');
     }
   };
 
@@ -112,7 +114,8 @@ const FuelExpenses = () => {
       setShowAddExpenseModal(false);
       fetchData();
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Failed to add expense');
+      console.error('Failed to add expense:', err?.response?.data?.error || err.message);
+      toast.error(err?.response?.data?.error || 'Failed to add expense');
     }
   };
 

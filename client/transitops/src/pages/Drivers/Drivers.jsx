@@ -44,7 +44,8 @@ const Drivers = () => {
       const data = response.data;
       setDrivers(data);
     } catch (err) {
-      toast.error('Failed to load drivers');
+      console.error('Failed to load drivers:', err?.response?.data?.error || err.message);
+      toast.error(err?.response?.data?.error || 'Failed to load drivers');
     } finally {
       setIsLoading(false);
     }

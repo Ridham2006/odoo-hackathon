@@ -33,7 +33,8 @@ const Fleet = () => {
       const response = await vehicleAPI.getAll(params);
       setVehicles(response.data);
     } catch (err) {
-      toast.error('Failed to load vehicles');
+      console.error('Failed to load vehicles:', err?.response?.data?.error || err.message);
+      toast.error(err?.response?.data?.error || 'Failed to load vehicles');
     } finally {
       setIsLoading(false);
     }
