@@ -21,19 +21,23 @@ const Dashboard = () => {
         <StatCard title="Fleet Utilization" value="81%" color="#22C55E" />
       </div>
 
+<div className="mt-8 grid grid-cols-3 gap-6">
+
+  <div className="col-span-2">
+
+    <RecentTrips />
+
+  </div>
+
+  <VehicleStatus />
+
+</div>
       {/* Bottom Section */}
       <div className="mt-8 grid grid-cols-1
 md:grid-cols-2
 xl:grid-cols-4
 2xl:grid-cols-7 gap-6">
-        <div className="col-span-2">
-          <RecentTrips />
-        </div>
-
-        <div className="w-full">
-    <VehicleStatus />
-  </div>
-
+        
       </div>
     </MainLayout>
   );
