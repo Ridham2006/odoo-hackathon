@@ -1,0 +1,860 @@
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### =============================================================================
+# AUTHENTICATION
+### =============================================================================
+
+### SIGNUP - Fleet Manager
+# @name signup_fleet_manager
+POST {{baseUrl}}/api/auth/signup
+Content-Type: {{contentType}}
+
+{
+  "name": "Fleet Manager",
+  "email": "fleetmanager@example.com",
+  "password": "password123",
+  "role": "FLEET_MANAGER"
+}
+
+### SIGNUP - Dispatcher
+# @name signup_dispatcher
+POST {{baseUrl}}/api/auth/signup
+Content-Type: {{contentType}}
+
+{
+  "name": "Dispatcher",
+  "email": "dispatcher@example.com",
+  "password": "password123",
+  "role": "DISPATCHER"
+}
+
+### SIGNUP - Safety Officer
+# @name signup_safety_officer
+POST {{baseUrl}}/api/auth/signup
+Content-Type: {{contentType}}
+
+{
+  "name": "Safety Officer",
+  "email": "safetyofficer@example.com",
+  "password": "password123",
+  "role": "SAFETY_OFFICER"
+}
+
+### SIGNUP - Financial Analyst
+# @name signup_financial_analyst
+POST {{baseUrl}}/api/auth/signup
+Content-Type: {{contentType}}
+
+{
+  "name": "Financial Analyst",
+  "email": "analyst@example.com",
+  "password": "password123",
+  "role": "FINANCIAL_ANALYST"
+}
+
+### LOGIN - Fleet Manager
+# @name login_fleet_manager
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "fleetmanager@example.com",
+  "password": "password123"
+}
+api/auth/signup
+### LOGIN - Dispatcher
+# @name login_dispatcher
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "dispatcher@example.com",
+  "password": "password123"
+}
+
+### LOGIN - Safety Officer
+# @name login_safety_officer
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "safetyofficer@example.com",
+  "password": "password123"
+}
+
+### LOGIN - Financial Analyst
+# @name login_financial_analyst
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "analyst@example.com",
+  "password": "password123"
+}
+
+### =============================================================================
+# AUTH VARIABLES - Update these after login responses
+### =============================================================================
+
+@fleetManagerToken = {{login_fleet_manager.response.body.token}}
+@dispatcherToken = {{login_dispatcher.response.body.token}}
+@safetyOfficerToken = {{login_safety_officer.response.body.token}}
+@analystToken = {{login_financial_analyst.response.body.token}}
+
+### =============================================================================
+# VEHICLES API (FLEET_MANAGER, DISPATCHER, FINANCIAL_ANALYST can view)
+### =============================================================================
+
+### GET ALL VEHICLES (Fleet Manager)
+GET {{baseUrl}}/api/vehicles
+Authorization: Bearer {{fleetManagerToken}}
+
+### GET ALL VEHICLES (Dispatcher)
+GET {{baseUrl}}/api/vehicles
+Authorization: Bearer {{dispatcherToken}}
+
+### GET ALL VEHICLES (Financial Analyst)
+GET {{baseUrl}}/api/vehicles
+Authorization: Bearer {{analystToken}}
+
+### GET VEHICLE BY ID
+GET {{baseUrl}}/api/vehicles/{{vehicleId}}
+Authorization: Bearer {{fleetManagerToken}}
+
+### CREATE VEHICLE (Fleet Manager only)
+# @name create_vehicle
+POST {{baseUrl}}/api/vehicles
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "regNo": "GJ01AB1234",
+  "name": "Tata Ace",
+  "type": "LCV",
+  "capacity": 1000,
+  "acqCost": 850000
+}
+
+@vehicleId = {{create_vehicle.response.body._id}}
+
+### CREATE ANOTHER VEHICLE
+# @name create_vehicle2
+POST {{baseUrl}}/api/vehicles
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "regNo": "MH12CD5678",
+  "name": "Ashok Leyland Dost",
+  "type": "LCV",
+  "capacity": 1500,
+  "acqCost": 950000
+}
+
+@vehicleId2 = {{create_vehicle2.response.body._id}}
+
+### CREATE HEAVY VEHICLE
+# @name create_vehicle3
+POST {{baseUrl}}/api/vehicles
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "regNo": "DL01EF9012",
+  "name": "Volvo FH16",
+  "type": "HCV",
+  "capacity": 40000,
+  "acqCost": 4500000
+}
+
+@vehicleId3 = {{create_vehicle3.response.body._id}}
+
+### UPDATE VEHICLE (Fleet Manager only)
+PUT {{baseUrl}}/api/vehicles/{{vehicleId}}
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "odometer": 15000,
+  "status": "AVAILABLE"
+}
+
+### DELETE VEHICLE (Fleet Manager only)
+DELETE {{baseUrl}}/api/vehicles/{{vehicleId2}}
+Authorization: Bearer {{fleetManagerToken}}
+
+### =============================================================================
+# DRIVERS API (FLEET_MANAGER, SAFETY_OFFICER can view)
+### =============================================================================
+
+### GET ALL DRIVERS (Fleet Manager)
+GET {{baseUrl}}/api/drivers
+Authorization: Bearer {{fleetManagerToken}}
+
+### GET ALL DRIVERS (Safety Officer)
+GET {{baseUrl}}/api/drivers
+Authorization: Bearer {{safetyOfficerToken}}
+
+### GET DRIVER BY ID
+GET {{baseUrl}}/api/drivers/{{driverId}}
+Authorization: Bearer {{fleetManagerToken}}
+
+### CREATE DRIVER (Fleet Manager only)
+# @name create_driver
+POST {{baseUrl}}/api/drivers
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Rajesh Kumar",
+  "licenseNo": "DL0123456789",
+  "category": "LMV",
+  "expiry": "2028-12-31",
+  "contact": "9876543210",
+  "safetyStatus": "Good"
+}
+
+@driverId = {{create_driver.response.body._id}}
+
+### CREATE ANOTHER DRIVER
+# @name create_driver2
+POST {{baseUrl}}/api/drivers
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Suresh Singh",
+  "licenseNo": "MH0987654321",
+  "category": "HMV",
+  "expiry": "2029-06-15",
+  "contact": "9123456780",
+  "safetyStatus": "Excellent"
+}
+
+@driverId2 = {{create_driver2.response.body._id}}
+
+### UPDATE DRIVER (Fleet Manager only)
+PUT {{baseUrl}}/api/drivers/{{driverId}}
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "tripCompleted": 15,
+  "status": "AVAILABLE"
+}
+
+### DELETE DRIVER (Fleet Manager only)
+DELETE {{baseUrl}}/api/drivers/{{driverId2}}
+Authorization: Bearer {{fleetManagerToken}}
+
+### =============================================================================
+# TRIPS API (DISPATCHER, SAFETY_OFFICER can view)
+### =============================================================================
+
+### GET ALL TRIPS (Dispatcher)
+GET {{baseUrl}}/api/trips
+Authorization: Bearer {{dispatcherToken}}
+
+### GET ALL TRIPS (Safety Officer)
+GET {{baseUrl}}/api/trips
+Authorization: Bearer {{safetyOfficerToken}}
+
+### GET TRIP BY ID
+GET {{baseUrl}}/api/trips/{{tripId}}
+Authorization: Bearer {{dispatcherToken}}
+
+### CREATE TRIP (Dispatcher only) - DRAFT status
+# @name create_trip
+POST {{baseUrl}}/api/trips
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{
+  "tripNo": "TRP-2024-001",
+  "source": "Mumbai",
+  "destination": "Pune",
+  "vehicle": "{{vehicleId}}",
+  "driver": "{{driverId}}",
+  "cargoWeight": 500,
+  "plannedDistance": 150
+}
+
+@tripId = {{create_trip.response.body._id}}
+
+### CREATE ANOTHER TRIP
+# @name create_trip2
+POST {{baseUrl}}/api/trips
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{
+  "tripNo": "TRP-2024-002",
+  "source": "Delhi",
+  "destination": "Jaipur",
+  "vehicle": "{{vehicleId3}}",
+  "driver": "{{driverId}}",
+  "cargoWeight": 25000,
+  "plannedDistance": 280
+}
+
+@tripId2 = {{create_trip2.response.body._id}}
+
+### DISPATCH TRIP (Dispatcher only) - Changes status to DISPATCHED, updates vehicle/driver status
+POST {{baseUrl}}/api/trips/{{tripId}}/dispatch
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{}
+
+### COMPLETE TRIP (Dispatcher only) - Changes status to COMPLETED, releases vehicle/driver
+POST {{baseUrl}}/api/trips/{{tripId}}/complete
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{}
+
+### CANCEL TRIP (Dispatcher only) - Changes status to CANCELLED, releases vehicle/driver if dispatched
+POST {{baseUrl}}/api/trips/{{tripId2}}/cancel
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{}
+
+### =============================================================================
+# MAINTENANCE API (FLEET_MANAGER only)
+### =============================================================================
+
+### GET ALL MAINTENANCE LOGS
+GET {{baseUrl}}/api/maintenance
+Authorization: Bearer {{fleetManagerToken}}
+
+### GET MAINTENANCE LOGS WITH STATUS FILTER
+GET {{baseUrl}}/api/maintenance?status=OPEN
+Authorization: Bearer {{fleetManagerToken}}
+
+### CREATE MAINTENANCE LOG (Fleet Manager only) - Sets vehicle status to IN_SHOP
+# @name create_maintenance
+POST {{baseUrl}}/api/maintenance
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "vehicle": "{{vehicleId}}",
+  "serviceType": "Engine Overhaul",
+  "cost": 45000,
+  "date": "2024-01-15T10:00:00Z"
+}
+
+@maintenanceId = {{create_maintenance.response.body._id}}
+
+### CREATE ANOTHER MAINTENANCE LOG
+# @name create_maintenance2
+POST {{baseUrl}}/api/maintenance
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "vehicle": "{{vehicleId3}}",
+  "serviceType": "Brake Service",
+  "cost": 15000,
+  "date": "2024-01-20T10:00:00Z"
+}
+
+@maintenanceId2 = {{create_maintenance2.response.body._id}}
+
+### CLOSE MAINTENANCE LOG (Fleet Manager only) - Sets vehicle status back to AVAILABLE
+POST {{baseUrl}}/api/maintenance/{{maintenanceId}}/close
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{}
+
+### =============================================================================
+# EXPENSES API (FINANCIAL_ANALYST, FLEET_MANAGER can view; FINANCIAL_ANALYST can add)
+### =============================================================================
+
+### ==========================================
+# FUEL LOGS
+### ==========================================
+
+### GET ALL FUEL LOGS (Financial Analyst)
+GET {{baseUrl}}/api/expenses/fuel
+Authorization: Bearer {{analystToken}}
+
+### GET ALL FUEL LOGS (Fleet Manager)
+GET {{baseUrl}}/api/expenses/fuel
+Authorization: Bearer {{fleetManagerToken}}
+
+### ADD FUEL LOG (Financial Analyst only)
+# @name add_fuel_log
+POST {{baseUrl}}/api/expenses/fuel
+Authorization: Bearer {{analystToken}}
+Content-Type: {{contentType}}
+
+{
+  "vehicle": "{{vehicleId}}",
+  "liters": 150,
+  "fuelCost": 15000,
+  "date": "2024-01-10T08:00:00Z"
+}
+
+@fuelLogId = {{add_fuel_log.response.body._id}}
+
+### ADD ANOTHER FUEL LOG
+# @name add_fuel_log2
+POST {{baseUrl}}/api/expenses/fuel
+Authorization: Bearer {{analystToken}}
+Content-Type: {{contentType}}
+
+{
+  "vehicle": "{{vehicleId3}}",
+  "liters": 500,
+  "fuelCost": 55000,
+  "date": "2024-01-12T08:00:00Z"
+}
+
+@fuelLogId2 = {{add_fuel_log2.response.body._id}}
+
+### ==========================================
+# OTHER EXPENSES (Toll, Misc, Maintenance linked)
+### ==========================================
+
+### GET ALL EXPENSES (Financial Analyst)
+GET {{baseUrl}}/api/expenses
+Authorization: Bearer {{analystToken}}
+
+### GET ALL EXPENSES (Fleet Manager)
+GET {{baseUrl}}/api/expenses
+Authorization: Bearer {{fleetManagerToken}}
+
+### ADD EXPENSE (Financial Analyst only)
+# @name add_expense
+POST {{baseUrl}}/api/expenses
+Authorization: Bearer {{analystToken}}
+Content-Type: {{contentType}}
+
+{
+  "trip": "{{tripId}}",
+  "vehicle": "{{vehicleId}}",
+  "toll": 2500,
+  "other": 500,
+  "maintenance": "{{maintenanceId}}"
+}
+
+@expenseId = {{add_expense.response.body._id}}
+
+### ADD EXPENSE WITHOUT MAINTENANCE LINK
+# @name add_expense2
+POST {{baseUrl}}/api/expenses
+Authorization: Bearer {{analystToken}}
+Content-Type: {{contentType}}
+
+{
+  "trip": "{{tripId2}}",
+  "vehicle": "{{vehicleId3}}",
+  "toll": 1200,
+  "other": 800
+}
+
+@expenseId2 = {{add_expense2.response.body._id}}
+
+### =============================================================================
+# ANALYTICS API
+### =============================================================================
+
+### GET DASHBOARD KPIs (All authenticated roles)
+### GET {{baseUrl}}/api/analytics/dashboard
+Authorization: Bearer {{fleetManagerToken}}
+
+### GET DASHBOARD KPIs (Dispatcher)
+GET {{baseUrl}}/api/analytics/dashboard
+Authorization: Bearer {{dispatcherToken}}
+
+### GET DASHBOARD KPIs (Safety Officer)
+GET {{baseUrl}}/api/analytics/dashboard
+Authorization: Bearer {{safetyOfficerToken}}
+
+### GET DASHBOARD KPIs (Financial Analyst)
+GET {{baseUrl}}/api/analytics/dashboard
+Authorization: Bearer {{analystToken}}
+
+### GET ANALYTICS & REPORTS (Fleet Manager)
+GET {{baseUrl}}/api/analytics
+Authorization: Bearer {{fleetManagerToken}}
+
+### GET ANALYTICS & REPORTS (Financial Analyst)
+GET {{baseUrl}}/api/analytics
+Authorization: Bearer {{analystToken}}
+
+### =============================================================================
+# HEALTH CHECK
+### =============================================================================
+
+### HEALTH CHECK
+GET {{baseUrl}}/
+
+### =============================================================================
+# ROLE-BASED ACCESS TESTING
+### =============================================================================
+
+### TEST: Dispatcher trying to create vehicle (should fail - 403)
+POST {{baseUrl}}/api/vehicles
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{
+  "regNo": "TEST1234",
+  "name": "Test Vehicle",
+  "type": "LCV",
+  "capacity": 1000,
+  "acqCost": 500000
+}
+
+### TEST: Safety Officer trying to create driver (should fail - 403)
+POST {{baseUrl}}/api/drivers
+Authorization: Bearer {{safetyOfficerToken}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test Driver",
+  "licenseNo": "TEST123456",
+  "category": "LMV",
+  "expiry": "2028-12-31",
+  "contact": "9999999999"
+}
+
+### TEST: Financial Analyst trying to create trip (should fail - 403)
+POST {{baseUrl}}/api/trips
+Authorization: Bearer {{analystToken}}
+Content-Type: {{contentType}}
+
+{
+  "tripNo": "TEST-001",
+  "source": "A",
+  "destination": "B",
+  "vehicle": "{{vehicleId}}",
+  "driver": "{{driverId}}",
+  "cargoWeight": 100,
+  "plannedDistance": 50
+}
+
+### TEST: Dispatcher trying to add maintenance (should fail - 403)
+POST {{baseUrl}}/api/maintenance
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{
+  "vehicle": "{{vehicleId}}",
+  "serviceType": "Test",
+  "cost": 1000
+}
+
+### TEST: Fleet Manager trying to add fuel log (should fail - 403)
+POST {{baseUrl}}/api/expenses/fuel
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "vehicle": "{{vehicleId}}",
+  "liters": 100,
+  "fuelCost": 10000
+}
+
+### TEST: Dispatcher trying to add expense (should fail - 403)
+POST {{baseUrl}}/api/expenses
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{
+  "vehicle": "{{vehicleId}}",
+  "toll": 100,
+  "other": 50
+}
+
+### TEST: Financial Analyst trying to view analytics (should succeed)
+GET {{baseUrl}}/api/analytics
+Authorization: Bearer {{analystToken}}
+
+### TEST: Dispatcher trying to view analytics (should fail - 403)
+GET {{baseUrl}}/api/analytics
+Authorization: Bearer {{dispatcherToken}}
+
+### =============================================================================
+# COMPLETE WORKFLOW TEST
+### =============================================================================
+
+### WORKFLOW: Complete Trip Lifecycle
+# 1. Fleet Manager creates vehicle and driver
+# 2. Dispatcher creates trip (DRAFT)
+# 3. Dispatcher dispatches trip (DISPATCHED) - vehicle becomes ON_TRIP, driver becomes ON_TRIP
+# 4. Add fuel log for the trip
+# 5. Add expense (toll, other) for the trip
+# 6. Dispatcher completes trip (COMPLETED) - vehicle becomes AVAILABLE, driver becomes AVAILABLE
+# 7. Check analytics
+
+### 1. CREATE VEHICLE FOR WORKFLOW
+# @name wf_vehicle
+POST {{baseUrl}}/api/vehicles
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "regNo": "WF01AB1234",
+  "name": "Workflow Vehicle",
+  "type": "LCV",
+  "capacity": 2000,
+  "acqCost": 1000000
+}
+
+@wf_vehicleId = {{wf_vehicle.response.body._id}}
+
+### 2. CREATE DRIVER FOR WORKFLOW
+# @name wf_driver
+POST {{baseUrl}}/api/drivers
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Workflow Driver",
+  "licenseNo": "WFDL123456",
+  "category": "LMV",
+  "expiry": "2029-12-31",
+  "contact": "9876501234"
+}
+
+@wf_driverId = {{wf_driver.response.body._id}}
+
+### 3. CREATE TRIP (DRAFT)
+# @name wf_trip
+POST {{baseUrl}}/api/trips
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{
+  "tripNo": "WF-TRP-001",
+  "source": "Ahmedabad",
+  "destination": "Surat",
+  "vehicle": "{{wf_vehicleId}}",
+  "driver": "{{wf_driverId}}",
+  "cargoWeight": 1500,
+  "plannedDistance": 265
+}
+
+@wf_tripId = {{wf_trip.response.body._id}}
+
+### 4. DISPATCH TRIP
+POST {{baseUrl}}/api/trips/{{wf_tripId}}/dispatch
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{}
+
+### 5. ADD FUEL LOG FOR TRIP
+POST {{baseUrl}}/api/expenses/fuel
+Authorization: Bearer {{analystToken}}
+Content-Type: {{contentType}}
+
+{
+  "vehicle": "{{wf_vehicleId}}",
+  "liters": 80,
+  "fuelCost": 8000,
+  "date": "2024-01-15T06:00:00Z"
+}
+
+### 6. ADD EXPENSE FOR TRIP
+POST {{baseUrl}}/api/expenses
+Authorization: Bearer {{analystToken}}
+Content-Type: {{contentType}}
+
+{
+  "trip": "{{wf_tripId}}",
+  "vehicle": "{{wf_vehicleId}}",
+  "toll": 1500,
+  "other": 300
+}
+
+### 7. COMPLETE TRIP
+POST {{baseUrl}}/api/trips/{{wf_tripId}}/complete
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{}
+
+### 8. CHECK DASHBOARD KPIs AFTER WORKFLOW
+GET {{baseUrl}}/api/analytics/dashboard
+Authorization: Bearer {{fleetManagerToken}}
+
+### 9. CHECK ANALYTICS AFTER WORKFLOW
+GET {{baseUrl}}/api/analytics
+Authorization: Bearer {{fleetManagerToken}}
+
+### =============================================================================
+# ERROR CASES TESTING
+### =============================================================================
+
+### TEST: Login with wrong password
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "fleetmanager@example.com",
+  "password": "wrongpassword"
+}
+
+### TEST: Login with non-existent user
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "nonexistent@example.com",
+  "password": "password123"
+}
+
+### TEST: Signup with duplicate email
+POST {{baseUrl}}/api/auth/signup
+Content-Type: {{contentType}}
+
+{
+  "name": "Duplicate User",
+  "email": "fleetmanager@example.com",
+  "password": "password123",
+  "role": "FLEET_MANAGER"
+}
+
+### TEST: Create vehicle with duplicate regNo
+POST {{baseUrl}}/api/vehicles
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "regNo": "GJ01AB1234",
+  "name": "Duplicate Vehicle",
+  "type": "LCV",
+  "capacity": 1000,
+  "acqCost": 850000
+}
+
+### TEST: Create driver with duplicate license
+POST {{baseUrl}}/api/drivers
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Duplicate Driver",
+  "licenseNo": "DL0123456789",
+  "category": "LMV",
+  "expiry": "2028-12-31",
+  "contact": "9876543210"
+}
+
+### TEST: Create trip with non-existent vehicle
+POST {{baseUrl}}/api/trips
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{
+  "tripNo": "TEST-999",
+  "source": "A",
+  "destination": "B",
+  "vehicle": "507f1f77bcf86cd799439011",
+  "driver": "{{driverId}}",
+  "cargoWeight": 100,
+  "plannedDistance": 50
+}
+
+### TEST: Create trip with non-existent driver
+POST {{baseUrl}}/api/trips
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{
+  "tripNo": "TEST-998",
+  "source": "A",
+  "destination": "B",
+  "vehicle": "{{vehicleId}}",
+  "driver": "507f1f77bcf86cd799439011",
+  "cargoWeight": 100,
+  "plannedDistance": 50
+}
+
+### TEST: Dispatch already dispatched trip (should fail)
+POST {{baseUrl}}/api/trips/{{wf_tripId}}/dispatch
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{}
+
+### TEST: Complete already completed trip (should fail)
+POST {{baseUrl}}/api/trips/{{wf_tripId}}/complete
+Authorization: Bearer {{dispatcherToken}}
+Content-Type: {{contentType}}
+
+{}
+
+### TEST: Close already closed maintenance (should fail)
+POST {{baseUrl}}/api/maintenance/{{maintenanceId}}/close
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{}
+
+### TEST: Create maintenance for retired vehicle (should fail)
+# First retire a vehicle
+PUT {{baseUrl}}/api/vehicles/{{vehicleId2}}
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "status": "RETIRED"
+}
+
+# Then try to create maintenance for it
+POST {{baseUrl}}/api/maintenance
+Authorization: Bearer {{fleetManagerToken}}
+Content-Type: {{contentType}}
+
+{
+  "vehicle": "{{vehicleId2}}",
+  "serviceType": "Test Service",
+  "cost": 5000
+}
+
+### =============================================================================
+# QUERY PARAMETER TESTS
+### =============================================================================
+
+### GET VEHICLES WITH PAGINATION (if implemented)
+GET {{baseUrl}}/api/vehicles?page=1&limit=10
+Authorization: Bearer {{fleetManagerToken}}
+
+### GET MAINTENANCE LOGS FILTERED BY STATUS
+GET {{baseUrl}}/api/maintenance?status=CLOSED
+Authorization: Bearer {{fleetManagerToken}}
+
+### GET TRIPS FILTERED (if query params supported)
+GET {{baseUrl}}/api/trips?status=COMPLETED
+Authorization: Bearer {{dispatcherToken}}
+
+### =============================================================================
+# CLEANUP (Optional - run at end to clean test data)
+### =============================================================================
+
+### DELETE WORKFLOW VEHICLE
+DELETE {{baseUrl}}/api/vehicles/{{wf_vehicleId}}
+Authorization: Bearer {{fleetManagerToken}}
+
+### DELETE WORKFLOW DRIVER
+DELETE {{baseUrl}}/api/drivers/{{wf_driverId}}
+Authorization: Bearer {{fleetManagerToken}}
+
+### DELETE TEST VEHICLES
+DELETE {{baseUrl}}/api/vehicles/{{vehicleId}}
+Authorization: Bearer {{fleetManagerToken}}
+
+DELETE {{baseUrl}}/api/vehicles/{{vehicleId3}}
+Authorization: Bearer {{fleetManagerToken}}
+
+### DELETE TEST DRIVERS
+DELETE {{baseUrl}}/api/drivers/{{driverId}}
+Authorization: Bearer {{fleetManagerToken}}
