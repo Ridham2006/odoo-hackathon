@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+@import "tailwindcss";
+
+:root{
+  --primary:#729969;
+  --secondary:#A1C0C2;
+  --card:#E6E7EB;
+  --background:#F6F6F6;
+  --accent:#223125;
+  --text:#000000;
+}
+
+body{
+  background:var(--background);
+  color:var(--text);
+  font-family:Inter,sans-serif;
+}
