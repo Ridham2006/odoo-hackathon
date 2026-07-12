@@ -338,9 +338,3 @@ Per the problem statement's mandatory list:
 - **Vaibhav Dave** — Backend+Testing
 - **Om Upadhyay** — Backend
 - **Ridham Shah** — Frontend
-
-## Acknowledgments
-
-- Built for the **Odoo India Hackathon** — 8-hour build.
-- Original mockup: [Excalidraw wireframe](https://link.excalidraw.com/l/65VNwvy7c4X/1FHGDNgD2td)
-- Scaffolded with help from Claude Code
